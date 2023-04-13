@@ -74,6 +74,20 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             TextButton(
               onPressed: () {
+                agoraChatServices.getAgoraChatAppToken();
+              },
+              child: const Text('Generate chat app token'),
+            ),
+            TextButton(
+              onPressed: () {
+                agoraChatServices.getAgoraUserToken(
+                  agoraUsername: AgoraConstants.testUserID_001,
+                );
+              },
+              child: const Text('Generate user token'),
+            ),
+            TextButton(
+              onPressed: () {
                 agoraController.agoraChatUserSignIn();
               },
               child: const Text('Sign In'),
