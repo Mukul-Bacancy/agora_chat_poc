@@ -1,5 +1,4 @@
 import 'package:agora_chat_poc/agora_constants.dart';
-import 'package:agora_chat_poc/controller.dart';
 import 'package:agora_chat_poc/screens/chat_room-screen/chat_room_screen.dart';
 import 'package:agora_chat_sdk/agora_chat_sdk.dart';
 import 'package:dio/dio.dart';
@@ -144,7 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // initAgoraChatSDK();
+
+    //initAgoraChatSDK();
     addChatListener();
     addChatRoomEventsListener();
     super.initState();
@@ -279,31 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final Dio dio = Dio();
 
-  //final AgoraController controller = AgoraController();
 
-  //Initializes the agora SDK
-  // initAgoraChatSDK() async {
-  //   ChatOptions options = ChatOptions(
-  //     appKey: AgoraConstants.appKey,
-  //     autoLogin: false,
-  //   );
-  //   await ChatClient.getInstance.init(options);
-  // }
-
-  ///Token management callbacks
-
-  // getAgoraChatAppToken() async {
-  //   try {
-  //     var response = await dio.post(
-  //       AgoraConstants.chatAppTokenGeneratorUrl,
-  //       data: {'data': ''},
-  //     );
-  //     AgoraConstants.chatAppToken = response.data['result']['data']['token'];
-  //     print(response.data['result']['data']['token']);
-  //   } on Exception catch (e) {
-  //     print(e);
-  //   }
-  // }
 
 
   getAgoraUserToken({
@@ -468,6 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ChatClient.getInstance.chatManager.sendMessage(txtMsg).then((value) {
       print(value);
 
+
       addLogToConsole("send message: $message");
       print('Message sent');
     });
@@ -613,12 +590,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addChatRoomEventsListener() {
     ChatClient.getInstance.chatRoomManager.addEventHandler(
-      'UNIQUE_HANDLER_ID',
+      'ON_MEMBER_JOIN_EVENT_HANDLER',
       ChatRoomEventHandler(onMemberJoinedFromChatRoom: onMemberJoinChatRoom),
     );
   }
 
   void onMemberJoinChatRoom(String roomID ,String participant) {
     addLogToConsole('$participant joined the chat room ID ($roomID)');
+  }
+
+  void leaveAChatRoom({required String roomId}) async {
+    try {
+      await ChatClient.getInstance.chatRoomManager.leaveChatRoom(roomId);
+    } on ChatError catch (e) {
+      print('Failed to leave room : ${e.description}');
+    }
+
   }
 }
